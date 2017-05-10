@@ -18,4 +18,5 @@ def board(state):
     width = len(str(N ** 2)) + 2
     bar = HOR * width
     sep = CROSS.join([bar] * N)
-    return f"\n{sep}\n".join(line(l, start, N=N) for start, l in zip(range(1, N ** 2 + 1, N), state))
+    data = f"\n{sep}\n".join(line(l, start, N=N) for start, l in zip(range(1, N ** 2 + 1, N), state))
+    return f"\n{data}\n"

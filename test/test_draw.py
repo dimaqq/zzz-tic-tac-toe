@@ -7,7 +7,7 @@ BOARD = """
  o │ x │ o 
 ───┼───┼───
  7 │ 8 │ 9 
-""".strip("\n")  # NOQA (trailing whitespace important)
+"""  # NOQA (trailing whitespace important)
 
 
 def test_space():

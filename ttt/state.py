@@ -46,6 +46,27 @@ def next_move(state, players="xo"):
             return sorted(board_players, key=lambda k: c[k])[0]
 
 
+def index(move, N):
+    m = move - 1
+    assert 0 <= m < N ** 2, "Illegal move index"
+    return m // N, m % N
+
+
+def validate_move(state, move):
+    """ Moves are base-1 indices into the board """
+    assert move.isdigit(), "Move must be numeric (base 10)"
+    move = int(move)
+    x, y = index(move, N=len(state))
+    assert state[x][y] is None, "This position is already marked"
+    return move
+
+
+def apply_move(state, move, mark):
+    x, y = index(move, len(state))
+    assert state[x][y] is None
+    state[x][y] = mark
+
+
 def forward_diagonals(state):
     N = len(state)
     sentinel = object()
