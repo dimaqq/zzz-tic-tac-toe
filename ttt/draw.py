@@ -1,18 +1,25 @@
 
-hor = "─"
-vert = "│"
-cross = "┼"
+HOR = "─"
+VERT = "│"
+CROSS = "┼"
 
 
-def line(l, start):
-    # FIXME: board larger thant 3x3 requires larger indices
-    return f" {vert} ".join(str(i if v is None else v) for i, v in enumerate(l, start))
+def space(v, N=3):
+    width = len(str(N ** 2)) + 2
+    return str(v).center(width)
 
 
-def draw(state):
+def line(l, start, N=3):
+    return VERT.join(space(i if v is None else v, N=N) for i, v in enumerate(l, start))
+
+
+def board(state):
     N = len(state)
-    return f"\n{hor * len(state) * 3}\n".join(line(l, start) for start, l in zip(range(1, N * N + 1, N), state))
+    width = len(str(N ** 2)) + 2
+    bar = HOR * width
+    sep = CROSS.join([bar] * N)
+    return f"\n{sep}\n".join(line(l, start, N=N) for start, l in zip(range(1, N ** 2 + 1, N), state))
 
 
 if __name__ == "__main__":
-    print(draw([[1,2,3], [3,4,5], [None, None, None]]))
+    print(board([list("xox"), list("oxo"), [None, None, None]]))
