@@ -5,9 +5,13 @@ MAX_SIZE = 33  # arbitrary, as long as it fits on the screen
 
 
 def main():
+    """ Main loop of tic-tac-toe, starts a new game when current is over.
+        It's a generator to aid testing, use it as `any(main())`
+    """
     while True:
-        game()
+        any(game())
         print()
+        yield
 
 
 def prevalidate(s):
@@ -27,26 +31,7 @@ def validate_board_size(inp, default=3):
     return rv
 
 
-def game():
-    print("Welcome to a new game, enjoy!")
-    print("P.S. you can always quit by typing 'quit'")
-    while True:
-        try:
-            print("How large of a game? (default=3)")
-            N = validate_board_size(
-                prevalidate(
-                    prompt(">> ")))
-            break
-        except AssertionError as e:
-            print(e)
-
-    board = [[None for i in range(N)] for j in range(N)]
-    print("Enter name for player 1")
-    p1 = prompt(">> ")
-    print("Enter name for player 2")
-    p2 = prompt(">> ")
-    names = dict(x=p1, o=p2)
-
+def game_loop(board):
     while not state.game_over(board):
         print(draw.board(board))
         mark = state.next_move(board)
@@ -61,10 +46,43 @@ def game():
             except AssertionError as e:
                 print(e)
         state.apply_move(board, move, mark)
+        yield
 
-    print(draw.board(board))
+
+def game():
+    """ One game of tic-tac-toe.
+        It's a generator to aid testing, use it as `any(game())`
+    """
+    print("Welcome to a new game, enjoy!")
+    print("P.S. you can always quit by typing 'quit'")
+    while True:
+        try:
+            print("How large of a game? (default=3)")
+            N = validate_board_size(
+                prevalidate(
+                    prompt(">> ")))
+            break
+        except AssertionError as e:
+            print(e)
+            yield
+
+    board = [[None for i in range(N)] for j in range(N)]
+
+    print("Enter name for player 1")
+    p1 = prevalidate(
+        prompt(">> "))
+
+    print("Enter name for player 2")
+    p2 = prevalidate(
+        prompt(">> "))
+    names = dict(x=p1, o=p2)
+
+    yield from game_loop(board)
+
+    print(draw.board(board, clean=True))
     mark = state.game_over(board)
     if mark == "draw":
         print(f"Congratulations {p1} and {p2}, it's a draw!")
     else:
         print(f"Congratulations {names[mark]}, you won!")
+    yield
