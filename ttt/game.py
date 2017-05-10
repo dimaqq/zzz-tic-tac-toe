@@ -31,7 +31,7 @@ def validate_board_size(inp, default=3):
     return rv
 
 
-def game_loop(board):
+def game_loop(board, names):
     while not state.game_over(board):
         print(draw.board(board))
         mark = state.next_move(board)
@@ -45,6 +45,7 @@ def game_loop(board):
                 break
             except AssertionError as e:
                 print(e)
+                yield
         state.apply_move(board, move, mark)
         yield
 
@@ -77,7 +78,7 @@ def game():
         prompt(">> "))
     names = dict(x=p1, o=p2)
 
-    yield from game_loop(board)
+    any(game_loop(board, names))
 
     print(draw.board(board, clean=True))
     mark = state.game_over(board)

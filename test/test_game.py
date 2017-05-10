@@ -46,9 +46,6 @@ def test_game(game_over, prompt, print, game_loop):
     assert "new game" in str(print.call_args_list)
     assert "name for player 1" in str(print.call_args_list)
     assert "name for player 2" in str(print.call_args_list)
-    assert "Congratulations" not in str(print.call_args_list)
-
-    next(g)
     assert "Congratulations 3" in str(print.call_args_list)
 
 
@@ -59,7 +56,6 @@ def test_game(game_over, prompt, print, game_loop):
 def test_game_draw(game_over, prompt, print, game_loop):
     g = ttt.game.game()
 
-    next(g)
     next(g)
     assert "it's a draw" in str(print.call_args_list)
 
@@ -77,3 +73,38 @@ def test_game_validates_board_size(game_over, prompt, print, game_loop):
     prompt.return_value = ""
     next(g)
     assert "name for player" in str(print.call_args_list), "default board size ough to be used"
+
+
+@patch("ttt.game.print", create=True)
+@patch("ttt.game.prompt", return_value="3")
+def test_game_loop(prompt, print):
+    board = [[None, None], [None, None]]
+    gl = ttt.game.game_loop(board, dict(x="triple-ex", o="double-oh-seven"))
+
+    next(gl)
+    assert "triple-ex" in str(print.call_args_list)
+    assert "double-oh" not in str(print.call_args_list)
+    assert board == [[None, None], ["x", None]]
+
+    prompt.return_value = "2"
+    next(gl)
+    assert "double-oh" in str(print.call_args_list)
+    assert board == [[None, "o"], ["x", None]]
+
+
+@patch("ttt.game.print", create=True)
+@patch("ttt.game.prompt", return_value="foobar")
+def test_game_loop_validates_input(prompt, print):
+    board = [[None, None], [None, None]]
+    gl = ttt.game.game_loop(board, dict(x="triple-ex", o="double-oh-seven"))
+
+    next(gl)
+    assert "triple-ex" in str(print.call_args_list)
+    assert "double-oh" not in str(print.call_args_list)
+    assert board == [[None, None], [None, None]]
+
+    prompt.return_value = "2"
+    next(gl)
+    assert "triple-ex" in str(print.call_args_list)
+    assert "double-oh" not in str(print.call_args_list)
+    assert board == [[None, "x"], [None, None]]
