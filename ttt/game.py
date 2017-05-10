@@ -32,6 +32,9 @@ def validate_board_size(inp, default=3):
 
 
 def game_loop(board, names):
+    """ Moves in a tic-tac-toe game.
+        It's a generator to aid testing, use it as `any(game_loop(...))`
+    """
     while not state.game_over(board):
         print(draw.board(board))
         mark = state.next_move(board)

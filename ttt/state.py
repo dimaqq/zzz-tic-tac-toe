@@ -6,6 +6,7 @@ from collections import Counter
 
 
 def validate(state):
+    """ Current board state sanity check """
     assert state
     assert len(state) == len(state[0])
     c = sum(map(Counter, state), Counter())
@@ -26,6 +27,9 @@ def validate(state):
 
 
 def next_move(state, players="xo"):
+    """ Given the board, who is to move next?
+        returns a mark for next player, like 'x' or 'o'
+        """
     c = sum(map(Counter, state), Counter())
     board_players = [k for k in c.keys() if k is not None]
     if not board_players:
@@ -53,7 +57,9 @@ def index(move, N):
 
 
 def validate_move(state, move):
-    """ Moves are base-1 indices into the board """
+    """ Validate user requested move (string, input)
+        Returns an int that can be used for `apply_move`
+        Moves are base-1 indices into the board """
     N = len(state)
     assert move.isdigit(), "Move must be numeric (base 10)"
     move = int(move)
@@ -64,12 +70,19 @@ def validate_move(state, move):
 
 
 def apply_move(state, move, mark):
+    """ Modify baord state in place """
     x, y = index(move, len(state))
     assert state[x][y] is None
     state[x][y] = mark
 
 
 def forward_diagonals(state):
+    """ All the diagonals on the board, slanted right (like /)
+        Includes those shorter than N
+        e.g. . * .
+             * . .
+             . . .
+    """
     N = len(state)
     sentinel = object()
     data = [[sentinel] * i + line + [sentinel] * (N - i - 1) for i, line in enumerate(state)]
@@ -78,6 +91,12 @@ def forward_diagonals(state):
 
 
 def back_diagonals(state):
+    """ All the diagonals on the board, slanted left (like \)
+        Include those shorter than N
+        e.g. . . .
+             * , .
+             . * .
+    """
     N = len(state)
     sentinel = object()
     data = [[sentinel] * (N - i - 1) + line + [sentinel] * i for i, line in enumerate(state)]
@@ -86,11 +105,14 @@ def back_diagonals(state):
 
 
 def columns(state):
+    """ All the columns on the board """
     return zip(*state)
 
 
 def game_over(state):
-    # detect any 3 in a row, colum or either diagonal
+    """ detect any 3 in a row, colum or either diagonal
+        also detect when board is full but none won
+    """
     for mark in "xo":
         figure = mark * 3
         for gen in iter, columns, forward_diagonals, back_diagonals:
