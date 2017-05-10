@@ -54,9 +54,11 @@ def index(move, N):
 
 def validate_move(state, move):
     """ Moves are base-1 indices into the board """
+    N = len(state)
     assert move.isdigit(), "Move must be numeric (base 10)"
     move = int(move)
-    x, y = index(move, N=len(state))
+    assert 0 < move <= N ** 2, f"Move must be between 1 and {N ** 2} inclusive"
+    x, y = index(move, N=N)
     assert state[x][y] is None, "This position is already marked"
     return move
 

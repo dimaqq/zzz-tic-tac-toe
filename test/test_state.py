@@ -61,3 +61,38 @@ def test_game_over():
     assert ttt.state.game_over([list("xxx-"), list("----"), list("----"), list("----")]) == "x"
     assert ttt.state.game_over([list("x---"), list("-x--"), list("--x-"), list("----")]) == "x"
     assert ttt.state.game_over([list("-x--"), list("--x-"), list("---x"), list("----")]) == "x"
+
+
+def test_index():
+    x, y = ttt.state.index(42, 10)
+    assert x == 4
+    assert y == 1
+
+
+def test_validate_move():
+    assert ttt.state.validate_move([[None]], "1") == 1
+
+    with pytest.raises(AssertionError):
+        ttt.state.validate_move([[None]], "xxx")
+
+    with pytest.raises(AssertionError):
+        ttt.state.validate_move([[None]], "-3")
+
+    with pytest.raises(AssertionError):
+        ttt.state.validate_move([[None]], "99")
+
+    with pytest.raises(AssertionError):
+        ttt.state.validate_move([[None]], "0")
+
+    with pytest.raises(AssertionError):
+        ttt.state.validate_move([[None]], "2")
+
+    with pytest.raises(AssertionError):
+        ttt.state.validate_move([["x"]], "1")
+
+
+def test_apply_move():
+    board = [[None]]
+
+    ttt.state.apply_move(board, 1, "x")
+    assert board == [["x"]]
