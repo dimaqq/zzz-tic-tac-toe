@@ -19,7 +19,3 @@ def board(state):
     bar = HOR * width
     sep = CROSS.join([bar] * N)
     return f"\n{sep}\n".join(line(l, start, N=N) for start, l in zip(range(1, N ** 2 + 1, N), state))
-
-
-if __name__ == "__main__":
-    print(board([list("xox"), list("oxo"), [None, None, None]]))

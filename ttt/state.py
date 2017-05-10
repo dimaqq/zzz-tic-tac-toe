@@ -46,5 +46,37 @@ def next_move(state, players="xo"):
             return sorted(board_players, key=lambda k: c[k])[0]
 
 
+def forward_diagonals(state):
+    N = len(state)
+    sentinel = object()
+    data = [[sentinel] * i + line + [sentinel] * (N - i - 1) for i, line in enumerate(state)]
+    for column in zip(*data):
+        yield [c for c in column if c is not sentinel]
+
+
+def back_diagonals(state):
+    N = len(state)
+    sentinel = object()
+    data = [[sentinel] * (N - i - 1) + line + [sentinel] * i for i, line in enumerate(state)]
+    for column in zip(*data):
+        yield [c for c in column if c is not sentinel]
+
+
+def columns(state):
+    return zip(*state)
+
+
 def game_over(state):
-    ...
+    # detect any 3 in a row, colum or either diagonal
+    for mark in "xo":
+        figure = mark * 3
+        for gen in iter, columns, forward_diagonals, back_diagonals:
+            for line in gen(state):
+                line = "".join(" " if c is None else str(c) for c in line)
+                if figure in line:
+                    return mark
+
+    if any(None in line for line in state):
+        return False
+
+    return "draw"
