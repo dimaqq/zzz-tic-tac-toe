@@ -1,7 +1,9 @@
 ## Play
 
+From source or installed package:
+
 ```
-⋊> ~/tic-tac-toe on master ↑ python -m ttt                                                                    23:01:19
+⋊> python -m ttt
 Welcome to a new game, enjoy!
 P.S. you can always quit by typing 'quit'
 How large of a game? (default=3)
@@ -36,8 +38,13 @@ Congratulations Ms. First, you won!
 
 ## Build
 
-`python setup.py bdist_wheel`
+```
+pip install wheel
+python setup.py bdist_wheel
+```
 
 ## Test
 
-`tox`
+```
+tox
+```
