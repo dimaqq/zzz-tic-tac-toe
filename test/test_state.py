@@ -43,3 +43,21 @@ def test_back():
     assert [2] in data
     assert [1, 4] in data
     assert [3] in data
+
+
+def test_game_over():
+    # no winner
+    assert not ttt.state.game_over([[None, "x"], [None, None]])
+    assert ttt.state.game_over([list("ox"), list("ox")]) == "draw"
+
+    # 3 out of 3
+    assert ttt.state.game_over([list("xxx"), [None] * 3, [None] * 3]) == "x"
+    assert ttt.state.game_over([list("ooo"), [None] * 3, [None] * 3]) == "o"
+    assert ttt.state.game_over([list("xo-"), list("x--"), list("x--")]) == "x"
+    assert ttt.state.game_over([list("xo-"), list("-x-"), list("--x")]) == "x"
+    assert ttt.state.game_over([list("o-x"), list("ox-"), list("x--")]) == "x"
+
+    # 3 out of N
+    assert ttt.state.game_over([list("xxx-"), list("----"), list("----"), list("----")]) == "x"
+    assert ttt.state.game_over([list("x---"), list("-x--"), list("--x-"), list("----")]) == "x"
+    assert ttt.state.game_over([list("-x--"), list("--x-"), list("---x"), list("----")]) == "x"
